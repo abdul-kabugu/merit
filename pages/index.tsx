@@ -16,7 +16,7 @@ export default function Home() {
       </Head>
       <main className="">
         <div className="">
-         hello  world
+         hello  world  i  love  youu 
         </div>
       </main>
     </>
