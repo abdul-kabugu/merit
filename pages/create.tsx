@@ -6,13 +6,14 @@ import { useApolloClient, useQuery } from '@apollo/client'
 import React from 'react'
 
 export default function create() {
-  const {data, loading, error} = useQuery(GET_USER_PROFILE, {
+
+ /* const {data, loading, error} = useQuery(GET_USER_PROFILE, {
     variables : {
       handle : "kabugu"
     }
   })
 
-    console.log("the user profile ", data)
+    console.log("the user profile ", data)*/
   return (
     <div>
          <TopNav  />
