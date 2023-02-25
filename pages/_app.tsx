@@ -6,7 +6,8 @@ import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import { publicProvider } from 'wagmi/providers/public'
 import {mainnet, polygon, bscTestnet} from 'wagmi/chains'
-
+import { apolloClient } from '@/graphql/apollo/apolloClient';
+import {ApolloProvider} from '@apollo/client'
 const { chains, provider } = configureChains(
   [bscTestnet], // you can add more chains here like chain.mainnet, chain.optimism etc.
   [
@@ -27,16 +28,18 @@ const { connectors } = getDefaultWallets({
 });
 
 const wagmiClient = createClient({
-  autoConnect: false,
+  autoConnect: true,
   connectors,
   provider,
 });
 export default function App({ Component, pageProps }: AppProps) {
   return (
+    <ApolloProvider client={apolloClient}>
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider chains={chains} modalSize="compact">
 <Component {...pageProps} />
 </RainbowKitProvider>
 </WagmiConfig>
+</ApolloProvider>
   ) 
 }
