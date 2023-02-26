@@ -12,3 +12,29 @@ export const topNavOptions = [
         to : "/"
     },
 ]
+
+ export const testMedia = [
+    {
+       cover : "/testing-media/test-it.mp4",
+        name : "introducing merit"
+    },
+   
+    {
+        cover : "/testing-media/test-it.mp4",
+         name : "introducing merit"
+     },
+     {
+        cover : "/testing-media/test-it.mp4",
+         name : "introducing merit"
+     },
+     {
+        cover : "/testing-media/test-it.mp4",
+         name : "introducing merit"
+     },
+     {
+        cover : "/testing-media/test-it.mp4",
+         name : "introducing merit"
+     },
+    
+
+]

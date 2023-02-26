@@ -28,7 +28,7 @@ mutation Relay($input: RelayInput!) {
 }
 `;
 
-const RELAY_ACTION_STATUS = gql`
+const RELAY_ACTION_STATUS = `
 query RelayActionStatus($relayActionId: ID!) {
   relayActionStatus(relayActionId: $relayActionId) {
     ... on RelayActionStatusResult {
@@ -50,7 +50,7 @@ query RelayActionStatus($relayActionId: ID!) {
    const {address} = useAccount()
   const {signMessageAsync} = useSignMessage()
    const {uploadToIpfs} = usePinToIpfs()
-      const  createMerit = async (description, imgCover, name) => {
+      const  createMerit = async (description, imgCover, name, links, mediaType) => {
         // user  profile id
          const  profileId  =  "197568503064"
         // upload  to  image  to  ipfs
@@ -66,14 +66,19 @@ query RelayActionStatus($relayActionId: ID!) {
           lang: "en",
           issue_date: new Date().toISOString(),
           content: description,
-          media: [],
+          media: [{
+            media_type : mediaType,
+            media_url : `https://gateway.pinata.cloud/ipfs/${imageUri?.path}`,
+          
+           
+          }],
           tags: [],
           image: `https://gateway.pinata.cloud/ipfs/${imageUri?.path}`,
          // image_data: !nftImageURL ? svg_data : "",
           name: name,
           description: description,
           animation_url: "",
-          external_url: "",
+          external_url: links,
           attributes: [],
         }
 
@@ -110,7 +115,7 @@ query RelayActionStatus($relayActionId: ID!) {
       const  signature =  await signMessageAsync({message : message})
       // call the  rely 
 
-      const relyStatus =  await apolloClient.mutate({
+      const relayResult =  await apolloClient.mutate({
         mutation : gql(RELAY),
         variables : {
           input : {
@@ -120,8 +125,20 @@ query RelayActionStatus($relayActionId: ID!) {
          
         }
       })
-      const txHash = relayResult.data?.relay?.relayTransaction?.txHash;
+     // const txHash = relayResult.data.relay.relayTransaction.txHash;
+     const txHash = relayResult.data.relay;
+
+       // get  relyer  status 
+
+         const TxStatus = await apolloClient.query({
+          query : gql(RELAY_ACTION_STATUS),
+          variables : {
+            relayActionId : txHash.relayActionId
+          }
+         })
        console.log("the tx hash", txHash)
+       console.log("the tx  status", TxStatus)
+
       }
 
       return {
