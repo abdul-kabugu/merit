@@ -37,6 +37,7 @@ export const usePinToIpfs = () => {
     uploadToIpfs,
     isUploading,
     isUploadingError,
-    fileCID
+    fileCID,
+    client
    }
 }

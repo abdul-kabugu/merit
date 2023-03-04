@@ -1,22 +1,94 @@
 // @ts-nocheck
+import { RELAY_ACTION_STATUS } from '@/graphql/queries/getRelayerActionStatus'
 import { useCreateMerit } from '@/hooks'
-import {useState, useRef} from 'react'
+import { useQuery } from '@apollo/client'
+import axios from 'axios'
+import {useState, useRef, useEffect} from 'react'
 import {useForm} from 'react-hook-form'
 import {AiOutlineCloudUpload} from 'react-icons/ai'
+
+import { usePinToIpfs } from '@/hooks/usePinToIpfs'
+import ShareMerit from './ShareMerit'
+
 export default function CreateMerit() {
 const [meritCover, setmeritCover] = useState()
+const [status, setStatus] = useState('queued');
+const [isStatusSuccess, setisStatusSuccess] = useState(false)
+const [isStatusError, setisStatusError] = useState(false)
+const [isShowShare, setisShowShare] = useState(true)
+const [jsonData, setJsonData] = useState(null);
   const {register, handleSubmit, formState : {errors}} = useForm()
-  const {createMerit} = useCreateMerit()
+  const {createMerit, meritRelayId} = useCreateMerit()
+
   const mediaFileRef = useRef(null)
-  console.log("the selected file media", meritCover?.type)
     const handleSelectFile = () =>  {
         mediaFileRef.current.click()
     }
     const handleCreateMerit =  async (data) =>  {
       await createMerit(data.description, meritCover, data.title, data.links, meritCover?.type)
-    console.log("the out puts", data.title)
+    
     }
+
+    
+  //GET_CURRENT_TX_STATUS
+ const { loading, error, data, startPolling, stopPolling} = useQuery(RELAY_ACTION_STATUS, {
+    variables: {
+      relayActionId : meritRelayId,
+    } ,
+    pollInterval: 1000, // poll every second
+   // skip : isStatusSuccess
+  });
+
+ /* useEffect(() => {
+    if (data) {
+      const { relayActionStatus } = data;
+      if (relayActionStatus.txStatus === 'SUCCESS') {
+        setStatus('success');
+      } else if (relayActionStatus.txStatus === 'ERROR') {
+        setStatus('error');
+      }
+    }
+  }, [data]);*/
+     
+ 
+
+    //const {client} = usePinToIpfs()
+    
+
+
+ useEffect(() => {
+ 
+    if (data && data.relayActionStatus) {
+      if (data.relayActionStatus.txStatus === 'SUCCESS') {
+
+        setisStatusSuccess(true)
+        stopPolling();
+        const  essenceTokenURI = data?.relayActionStatus?.returnData?.essenceTokenURI
+        
+        alert('Post created successfully!');
+         setStatus("success")
+      } else if (data.relayActionStatus.txStatus === 'ERROR') {
+        setisStatusSuccess(true)
+        stopPolling();
+        alert(`Failed to create post: ${data.relayActionStatus.reason}`);
+      }
+    }
+   
+  
+  }, [data, stopPolling]);
+  
+  
+  
+  
+  
+  
+
+   console.log("tx status from create", data)
   return (
+     <div>
+      {/*isStatusSuccess && data.relayActionStatus.txStatus === 'SUCCESS' ?*/ isShowShare ?  (
+         <ShareMerit essenceID = {data?.relayActionStatus?.returnData?.essenceID  }   profileID = {data?.relayActionStatus?.returnData?.profileID         }         />
+      ) :
     <div className='max-w-[1300px] mx-auto border py-3 px-4  flex sm:flex-col lg:flex-row gap-20 items-center justify-center'>
       <div className='w-[500px]'>
         <h1 className='font-bold text-3xl'>Create merit</h1>
@@ -70,7 +142,13 @@ const [meritCover, setmeritCover] = useState()
          </div>
          }
        </div>
+       <h1> merit : {meritRelayId}</h1>
+       <h1>status {status}</h1>
+    
+  
        <button  className='font-semibold bg-purple-600 text-white mt-10 w-1/3 mx-auto py-2 px-6 rounded-lg lg:hidden'>Create</button>
+    </div>
+}
     </div>
   )
 }

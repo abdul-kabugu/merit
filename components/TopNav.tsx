@@ -10,6 +10,7 @@ import {motion} from 'framer-motion'
 import { useQuery } from '@apollo/client'
 import { PRIMARY_PROFILE } from '@/graphql/queries/getPrimaryProfileByAddress'
 import Link from 'next/link'
+import { RELAY_ACTION_STATUS } from '@/graphql/queries/getRelayerActionStatus'
 
 export default function TopNav() {
   const [accessTokensValue, setAccessTokensValue] = useState();
@@ -27,7 +28,14 @@ export default function TopNav() {
         }
        })
 
+       const {data :relayData, loading :isRelayDataLoading} = useQuery(RELAY_ACTION_STATUS, {
+        variables : {
+          relayActionId : "206158431999"
+        }
+       })
+   //206158431933
          console.log("the user  of  currnt", data)
+         console.log("the relayer action results", relayData)
      const  handleSignInWithCC = async () =>  {
       if(! isConnected) {
        alert("connect  wallet  first")
@@ -122,8 +130,8 @@ export default function TopNav() {
          <div className='flex gap-4 '>
          <div>
            <ConnectButton showBalance={false} />
-           {/* <button className='bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg' onClick={handleSignInWithCC}>Sin-in with cc</button>
-           */}
+           {<button className='bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg' onClick={handleSignInWithCC}>Sin-in with cc</button>
+           }
               </div>
             {getCurrentAuthState()}
             

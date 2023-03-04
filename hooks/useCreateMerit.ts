@@ -1,6 +1,9 @@
 // @ts-nocheck
 import { apolloClient } from '@/graphql/apollo/apolloClient';
 import {gql} from '@apollo/client'
+import { sign } from 'crypto';
+import { ethers } from 'ethers';
+import { useState } from 'react';
 import {v4 as uuidv4} from 'uuid'
 import { useAccount, useSignMessage } from 'wagmi';
 import { usePinToIpfs } from './usePinToIpfs';
@@ -47,17 +50,27 @@ query RelayActionStatus($relayActionId: ID!) {
 `;
 
   export const useCreateMerit = () =>  {
+   
    const {address} = useAccount()
   const {signMessageAsync} = useSignMessage()
    const {uploadToIpfs} = usePinToIpfs()
+
+   const [meritRelayId, setmeritRelayId] = useState("")
+
       const  createMerit = async (description, imgCover, name, links, mediaType) => {
         // user  profile id
-         const  profileId  =  "197568503064"
+         const  profileId  =  228
         // upload  to  image  to  ipfs
        //  api  key
        const  apiKey = "70BgK11vuzXCMjFKhwzOWbGHHzEeTHBW"
           const imageUri  = await uploadToIpfs(imgCover)
         // Merit  metadata
+        //Eth  provide
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        //Signer
+        const signer = provider.getSigner();
+     
+          //  
 
         const metadata = {
           metadata_id: uuidv4(),
@@ -111,8 +124,15 @@ query RelayActionStatus($relayActionId: ID!) {
     const typedData = typedDataResult.data?.createRegisterEssenceTypedData?.typedData;
     const message = typedData.data;
     const typedDataID = typedData.id;
+      
+    //const  signature =  await signMessageAsync({ message : sigParams})
 
-      const  signature =  await signMessageAsync({message : message})
+   /* Get the signature for the message signed with the wallet */
+const fromAddress = await signer.getAddress();
+const params = [fromAddress, message];
+const method = "eth_signTypedData_v4";
+const signature = await signer.provider.send(method, params);
+
       // call the  rely 
 
       const relayResult =  await apolloClient.mutate({
@@ -130,19 +150,23 @@ query RelayActionStatus($relayActionId: ID!) {
 
        // get  relyer  status 
 
-         const TxStatus = await apolloClient.query({
+       const TxStatus = await apolloClient.query({
           query : gql(RELAY_ACTION_STATUS),
           variables : {
             relayActionId : txHash.relayActionId
           }
          })
-       console.log("the tx hash", txHash)
-       console.log("the tx  status", TxStatus)
+   // SET_MERIT_RELAY_ID
+   setmeritRelayId(txHash.relayActionId)
+         
+      console.log("the tx  status", TxStatus)
 
       }
 
+         
+
       return {
-        createMerit
+        createMerit, meritRelayId
       }
   }
 
