@@ -18,7 +18,7 @@ export default function ShareMerit({profileID, essenceID }) {
          "essenceId": essenceID || 24
     }
   })
-  const shareUrl = `https://merit-x392.vercel.app/${data?.profileByID.essence.metadata?.metadata_id}`
+  const shareUrl = `https://merit-9bqo.vercel.app/collect/${data?.profileByID.essence.metadata?.metadata_id}`
     console.log("the data from share  essency  is here", data)
 
       const  getPreviewMedia = () =>  {
