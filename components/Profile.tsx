@@ -18,7 +18,7 @@ export default function Profile() {
         }
     })
        const theUserProfId = data?.address?.wallet?.primaryProfile?.profileID
-      const {badges, isBadgesLoading, isBadgesError} = useGetUserEssencies(theUserProfId, "meritone")
+      const {badges, isBadgesLoading, isBadgesError} = useGetUserEssencies(theUserProfId, "meritBadges")
     console.log("the dtata from profile", badges)
 
 

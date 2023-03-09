@@ -78,7 +78,7 @@ query RelayActionStatus($relayActionId: ID!) {
         const metadata = {
           metadata_id: uuidv4(),
           version: "1.0.0",
-          app_id: "meritone",
+          app_id: "meritBadges",
           lang: "en",
           issue_date: new Date().toISOString(),
           content: description,
