@@ -1,4 +1,4 @@
-/*import TopNav from '@/components/TopNav'
+import TopNav from '@/components/TopNav'
 import { fakeDescription, fakeHeading } from '@/constants'
 import {useState, useEffect} from 'react'
 import {useQuery} from '@apollo/client'
@@ -8,13 +8,11 @@ import { GET_ESSENCY_METADATA_ID } from '@/graphql/queries/getEssencyByMetadataI
 import { PRIMARY_PROFILE } from '@/graphql/queries/getPrimaryProfileByAddress'
 import { useAccount } from 'wagmi'
 import { useCollectMerit } from '@/hooks'
-import { RELAY_ACTION_STATUS } from '@/graphql/queries/getRelayerActionStatus'*/
+import { RELAY_ACTION_STATUS } from '@/graphql/queries/getRelayerActionStatus'
 
-import MeritPage from "@/components/MeritPage";
+export default function MeritPage() {
 
-export default function meritId() {
-
-    /*const  router  =  useRouter()
+    const  router  =  useRouter()
     const {collectMerit, meritRelayId} = useCollectMerit()
    const routerId  =  router.query.meritId
    const [status, setStatus] = useState('queued')
@@ -91,11 +89,10 @@ console.log("tx status from collect", TxData)
               )
             }
          }
-*/
+
 
   return (
     <div>
-      {/*
   <TopNav   />
     <div className='bg-purple-100 min-h-[80vh] flex items-center justify-center'>
 
@@ -104,12 +101,12 @@ console.log("tx status from collect", TxData)
             {/*<div className='max-w-[400px] h-[400px] '>
                 <img  src='/img/user-avatar.png' className='w-[100%] h-[100%] rounded-xl'  />
   </div>*/}
-   {/*}
+
      {getEssencyCover()}
 
               <div className=' lg:max-h-[440px] overflow-y-scroll w-[450px] min-h-[400px] rounded-lg py-3 px-3'>
                 <h1 className='font-semibold text-3xl mb-4 capitalize'>{firstEssencyInfo?.name}</h1>
-             
+                 
 
                  <h3 className='font-semibold text-lg text-black/75 mb-2'>Description</h3>
                   <p className='text-md text-black/60 mb-2'>{firstEssencyInfo?.metadata?.description}</p>
@@ -126,9 +123,7 @@ console.log("tx status from collect", TxData)
               </div>
         </div>
     </div>
-    </div*/}
-
-    <MeritPage    />
+    </div>
     </div>
   )
 }
