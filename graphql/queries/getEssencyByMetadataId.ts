@@ -1,6 +1,6 @@
 import {gql} from '@apollo/client'
 
-export const GET_ESSENCY_METADATA_ID = gql `
+/*export const GET_ESSENCY_METADATA_ID = gql `
 query EssenceByFilter($metadataId: String) {
     essenceByFilter(metadataID: $metadataId) {
       collectedBy {
@@ -54,4 +54,49 @@ query EssenceByFilter($metadataId: String) {
     }
   }
 
+`*/
+
+export const GET_ESSENCY_METADATA_ID = gql`
+
+query EssenceByFilter($metadataId: String) {
+  essenceByFilter(metadataID: $metadataId) {
+    id
+    essenceID
+    
+    createdBy {
+      avatar
+      id
+      handle
+      profileID
+    }
+    name
+    metadata {
+      metadata_id
+      version
+      app_id
+      lang
+      issue_date
+      content
+      media {
+        media_type
+        media_url
+        alt_tag
+        preview_image_url
+      }
+      tags
+      image
+      image_data
+      name
+      description
+      animation_url
+      attributes {
+        display_type
+        trait_type
+        value
+      }
+      external_url
+    }
+    symbol
+  }
+}
 `

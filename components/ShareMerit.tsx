@@ -1,7 +1,9 @@
 // @ts-nocheck
 import { GET_ESSENCE_BY_PROFILE_ID } from '@/graphql/queries/getEssencyByProfId'
 import { useQuery } from '@apollo/client'
+import Link from 'next/link'
 import React from 'react'
+import { AiOutlineRight } from 'react-icons/ai'
 import {FacebookShareButton} from 'react-share'
 import FacebookIcon from 'react-share/lib/FacebookIcon'
 import RedditIcon from 'react-share/lib/RedditIcon'
@@ -45,7 +47,7 @@ export default function ShareMerit({profileID, essenceID }) {
                  </div>
           </div>
 
-           <div>
+           <div className='flex justify-between'>
              <div className='flex gap-4 mt-5'>
                <FacebookShareButton url={shareUrl}>
                   <FacebookIcon round  size={40}/>
@@ -61,7 +63,15 @@ export default function ShareMerit({profileID, essenceID }) {
                   <RedditShareButton url={shareUrl}>
                     <RedditIcon  round size={40} />
                   </RedditShareButton>
+                    <Link href={`/collect/${data?.profileByID.essence.metadata?.metadata_id}`}>
+                  <div className='flex items-center gap-3 border border-purple-500 font-semibold py-2 px-3 rounded-lg cursor-pointer'>
+                     <button>Priview</button>
+                      <AiOutlineRight   />
+                  </div>
+                  </Link>
              </div>
+
+            
            </div>
           </div>
           <div>
