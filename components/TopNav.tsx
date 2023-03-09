@@ -18,6 +18,7 @@ export default function TopNav() {
     const {openConnectModal} = useConnectModal()
     const {generateMessage, authenticate} = useAuthenticate()
    const {signMessageAsync} = useSignMessage()
+   const [isAuthenticated, setisAuthenticated] = useState(false)
    const {address, isConnected } = useAccount()
    const chainId = useChainId();
      //  handle cc authentication
@@ -45,8 +46,16 @@ export default function TopNav() {
        const accessToken = await authenticate(address, signuture)
        window.localStorage.setItem('accessToken', accessToken);
       console.log("the access token", accessToken)
+      setAccessTokensValue(accessToken)
    }
 
+    //  handle  logout
+
+      const  handleLogOUtUser =  async () =>  {
+        localStorage.removeItem("accessToken")
+        setAccessTokensValue()
+
+      }
     // check  if  user  is  authenticated  
     
     
@@ -83,17 +92,18 @@ export default function TopNav() {
 
                         <div className='flex items-center gap-2 mb-3 cursor-pointer'>
                             <AiOutlineLogout  size={20} />
-                            <p className='font-semibold'>Log out</p>
+                            <button className='font-semibold' onClick={() => handleLogOUtUser()}>Log out</button>
                         </div>
                       
                       </div>
                    }
              </div>
             )
-          }else if(accessTokensValue && ! isConnected){
+          }else if( ! accessTokensValue ){
            return(
             <div>
-             <ConnectButton   />
+              <button className=' bg-white border-blue-500 text-black  font-semibold py-2 px-6 rounded-lg shadow-2xl' onClick={handleSignInWithCC}>Sin-in with cc</button>
+           
              </div>
            )
           }else if(isConnected && ! accessTokensValue){
@@ -113,7 +123,7 @@ export default function TopNav() {
   return (
     <div className=' max-w-[1300px] mx-auto flex justify-between items-center px-3 py-4 sticky top-1 z-10 bg-purple-100'>
          <div className='flex gap-10 items-center'>
-             <img   src='/img/logo.png'  className='rounded-full w-10 h-10 ring-2 cursor-pointer'   />
+            <Link href='/'><img   src='/img/logo.png'  className='rounded-full w-10 h-10 ring-2 cursor-pointer'   />  </Link> 
               <div className='flex gap-7 '>
                 {topNavOptions.map((item, i) =>  {
 
@@ -130,8 +140,8 @@ export default function TopNav() {
          <div className='flex gap-4 '>
          <div>
            <ConnectButton showBalance={false} />
-           {<button className='bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg' onClick={handleSignInWithCC}>Sin-in with cc</button>
-           }
+           {/*<button className='bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg' onClick={handleSignInWithCC}>Sin-in with cc</button>
+           */}
               </div>
             {getCurrentAuthState()}
             

@@ -46,7 +46,7 @@ export default function create() {
   return (
     <div className='bg-purple-100'>
          <TopNav  />
-          <h1>create  meric page </h1>
+         
           <CreateMerit />
      
     </div>

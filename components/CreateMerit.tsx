@@ -6,10 +6,10 @@ import axios from 'axios'
 import {useState, useRef, useEffect} from 'react'
 import {useForm} from 'react-hook-form'
 import {AiOutlineCloudUpload} from 'react-icons/ai'
-
 import { usePinToIpfs } from '@/hooks/usePinToIpfs'
 import ShareMerit from './ShareMerit'
-
+import { PRIMARY_PROFILE } from '@/graphql/queries/getPrimaryProfileByAddress'
+import { useAccount } from 'wagmi'
 export default function CreateMerit() {
 const [meritCover, setmeritCover] = useState()
 const [status, setStatus] = useState('queued');
@@ -18,14 +18,23 @@ const [isStatusError, setisStatusError] = useState(false)
 const [isShowShare, setisShowShare] = useState(true)
 const [jsonData, setJsonData] = useState(null);
   const {register, handleSubmit, formState : {errors}} = useForm()
-  const {createMerit, meritRelayId} = useCreateMerit()
-
+  const {createMerit, meritRelayId, isMeritUploading} = useCreateMerit()
+const  {address} = useAccount()
   const mediaFileRef = useRef(null)
+
+     //   GET_PRIMARY_PROFILE
+   const  {data :userProfile, loading: isUserProfileLoading, error : isUserProfileError} =  useQuery(PRIMARY_PROFILE, {
+    variables :  {
+      address : address
+    }
+   })
+
+   const theUserProfId  =  userProfile?.address?.wallet?.primaryProfile.profileID 
     const handleSelectFile = () =>  {
         mediaFileRef.current.click()
     }
     const handleCreateMerit =  async (data) =>  {
-      await createMerit(data.description, meritCover, data.title, data.links, meritCover?.type)
+      await createMerit(data.description, meritCover, data.title, data.links, meritCover?.type, theUserProfId)
     
     }
 
@@ -54,7 +63,7 @@ const [jsonData, setJsonData] = useState(null);
 
     //const {client} = usePinToIpfs()
     
-
+    
 
  useEffect(() => {
  
@@ -65,7 +74,7 @@ const [jsonData, setJsonData] = useState(null);
         stopPolling();
         const  essenceTokenURI = data?.relayActionStatus?.returnData?.essenceTokenURI
         
-        alert('Post created successfully!');
+        alert('badge created successfully!');
          setStatus("success")
       } else if (data.relayActionStatus.txStatus === 'ERROR') {
         setisStatusSuccess(true)
@@ -82,14 +91,15 @@ const [jsonData, setJsonData] = useState(null);
   
   
   
-
+  
+  console.log("the primary  profile", theUserProfId)
    console.log("tx status from create", data)
   return (
      <div>
-      {/*isStatusSuccess && data.relayActionStatus.txStatus === 'SUCCESS' ?*/ isShowShare ?  (
+      {isStatusSuccess && data.relayActionStatus.txStatus === 'SUCCESS' ?  (
          <ShareMerit essenceID = {data?.relayActionStatus?.returnData?.essenceID  }   profileID = {data?.relayActionStatus?.returnData?.profileID         }         />
       ) :
-    <div className='max-w-[1300px] mx-auto border py-3 px-4  flex sm:flex-col lg:flex-row gap-20 items-center justify-center'>
+    <div className='max-w-[1300px] h-screen mx-auto border py-3 px-4  flex sm:flex-col lg:flex-row gap-20 items-center justify-center'>
       <div className='w-[500px]'>
         <h1 className='font-bold text-3xl'>Create merit</h1>
         <p className='font-semibold text-black/70 mb-4'>Anything you enter here will be publicly visible.</p>
@@ -115,7 +125,7 @@ const [jsonData, setJsonData] = useState(null);
          
          </div>
      
-          <button type='submit' className='font-semibold bg-purple-600 text-white mt-10 w-1/3 mx-auto py-2 px-6 rounded-lg sm:hidden lg:inline'>Create</button>
+          <button type='submit' className='font-semibold bg-purple-600 text-white mt-10 w-1/3 mx-auto py-2 px-6 rounded-lg sm:hidden lg:inline'>{isMeritUploading ? "Uploading to IPFS" : "Create"}</button>
            
           
          </form>
@@ -128,7 +138,7 @@ const [jsonData, setJsonData] = useState(null);
           { ! meritCover ?
           <div className='flex flex-col items-center justify-center gap-3'>
           <AiOutlineCloudUpload onClick={handleSelectFile} className="cursor-pointer" size={40} />
-           <p className='text-xs text-black/50'>Supported  files   GIF / PNG / JPG / MP4</p>
+           <p className='text-xs text-black/50'>Supported  files    PNG / JPG </p>
           </div>
           : (
             <img src={URL.createObjectURL(meritCover)}   className="w-[100%] object-fill h-[100%] rounded-lg"   />
@@ -142,11 +152,10 @@ const [jsonData, setJsonData] = useState(null);
          </div>
          }
        </div>
-       <h1> merit : {meritRelayId}</h1>
-       <h1>status {status}</h1>
+     
     
   
-       <button  className='font-semibold bg-purple-600 text-white mt-10 w-1/3 mx-auto py-2 px-6 rounded-lg lg:hidden'>Create</button>
+       <button  className='font-semibold bg-purple-600 text-white mt-10 w-1/3 mx-auto py-2 px-6 rounded-lg lg:hidden'  >Create</button>
     </div>
 }
     </div>

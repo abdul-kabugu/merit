@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { testMedia } from '@/constants'
 import { PRIMARY_PROFILE } from '@/graphql/queries/getPrimaryProfileByAddress'
 import { useQuery } from '@apollo/client'
@@ -5,6 +6,9 @@ import {useState} from 'react'
 import { useAccount } from 'wagmi'
 import {motion} from 'framer-motion'
 import { AiOutlineDatabase } from 'react-icons/ai'
+import { useGetUserEssencies } from '@/hooks'
+import Link from 'next/link'
+
 export default function Profile() {
     const [currentTab, setcurrentTab] = useState(0)
     const {address} = useAccount()
@@ -13,27 +17,31 @@ export default function Profile() {
             address : address
         }
     })
-
-    console.log("the dtata from profile", data)
+       const theUserProfId = data?.address?.wallet?.primaryProfile?.profileID
+      const {badges, isBadgesLoading, isBadgesError} = useGetUserEssencies(theUserProfId, "meritone")
+    console.log("the dtata from profile", badges)
 
 
      const getCurrentTab = () =>  {
           if(currentTab  === 0) {
             return(
                 <div className='flex gap-5 flex-wrap flex-grow-2 flex-shrink-2 items-center justify-center sm:justify-center lg:justify-start'>
-                    {testMedia.map((item, i) => {
-
+                    {badges?.profileByID.essences?.edges.map((item, i) => {
+                        const  imgUrl = item?.node?.metadata?.media[0].media_url
+                        const itemId  = item?.node?.metadata?.metadata_id
                         return(
-                            <motion.div 
+                          <Link href={`/collect/${itemId}`} key={i}> <motion.div 
                               whileHover={{scale : 1.1}}
                               transition={{duration : 1.7}}
                             className='cursor-pointer ' key={i}>
-                               <video autoPlay loop muted playsInline  className="w-[280px] rounded-lg "  >
+                               {/*<video autoPlay loop muted playsInline  className="w-[280px] rounded-lg "  >
                                  <source src={item.cover} />
-                               </video>
+                        </video>*/}
+                          <img  src={imgUrl}    className="w-[310px] h-[220px] rounded-lg object-cover ring-2 ring-purple-300"    />
                                  
                                 <h1 className='text-center font-semibold text-xl capitalize text-black/50'>{item.name}</h1>
                             </motion.div>
+                            </Link> 
                         )
                     })}
                 </div>

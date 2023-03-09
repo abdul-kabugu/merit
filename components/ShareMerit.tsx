@@ -20,11 +20,11 @@ export default function ShareMerit({profileID, essenceID }) {
          "essenceId": essenceID || 24
     }
   })
-  const shareUrl = `https://merit-9bqo.vercel.app/collect/${data?.profileByID.essence.metadata?.metadata_id}`
+  const shareUrl = `https://merit-five.vercel.app/collect/${data?.profileByID.essence.metadata?.metadata_id}`
     console.log("the data from share  essency  is here", data)
 
       const  getPreviewMedia = () =>  {
-        if(data?.profileByID.essence.metadata.media[0].media_type === "image/png"          ){
+        if(data?.profileByID.essence.metadata?.media[0].media_type === "image/png"          ){
            return(
              <div className='w-[350px] h-[300px] border py-2 px-2 border-gray-300 rounded-lg'>
                <img  src={data?.profileByID.essence.metadata.media[0].media_url}  className="w-[100%] h-[100%] object-cover rounded-lg" />
@@ -33,11 +33,12 @@ export default function ShareMerit({profileID, essenceID }) {
         }
       }
   return (
-    <div className='h-screen bg-purple-100 flex items-center justify-center'>
+    <div className=' max-w-[1300px] mx-auto h-screen bg-purple-100 flex items-center justify-center'>
        <div className='flex gap-4 items-center'>
         <div>
           <div>
                <h1 className='text-3xl font-semibold mb-2'>Share claim link</h1>
+               
                <p className='font-semibold text-lg mb-4'>Share this link with allowlisted people so they can claim their Merit</p>
                  <div className='w-[400px] h-12 py-3 px-4 rounded-xl border border-blue-500 flex items-center justify-between'>
                   
@@ -64,7 +65,7 @@ export default function ShareMerit({profileID, essenceID }) {
                     <RedditIcon  round size={40} />
                   </RedditShareButton>
                     <Link href={`/collect/${data?.profileByID.essence.metadata?.metadata_id}`}>
-                  <div className='flex items-center gap-3 border border-purple-500 font-semibold py-2 px-3 rounded-lg cursor-pointer'>
+                  <div className='flex items-center gap-3 border border-blue-500 font-semibold py-2 px-3 rounded-lg cursor-pointer'>
                      <button>Priview</button>
                       <AiOutlineRight   />
                   </div>

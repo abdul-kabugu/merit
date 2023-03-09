@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { IPFS_GATEWAY, IPFS_GATEWAY_TWO } from '@/constants';
 import { apolloClient } from '@/graphql/apollo/apolloClient';
 import {gql} from '@apollo/client'
 import { sign } from 'crypto';
@@ -50,16 +51,18 @@ query RelayActionStatus($relayActionId: ID!) {
 `;
 
   export const useCreateMerit = () =>  {
-   
+   const [isMeritUploading, setisMeritUploading] = useState(false)
    const {address} = useAccount()
   const {signMessageAsync} = useSignMessage()
    const {uploadToIpfs} = usePinToIpfs()
 
    const [meritRelayId, setmeritRelayId] = useState("")
 
-      const  createMerit = async (description, imgCover, name, links, mediaType) => {
+      const  createMerit = async (description, imgCover, name, links, mediaType, profId) => {
+        setisMeritUploading(true)
+        try {
         // user  profile id
-         const  profileId  =  228
+         const  profileId  =  profId
         // upload  to  image  to  ipfs
        //  api  key
        const  apiKey = "70BgK11vuzXCMjFKhwzOWbGHHzEeTHBW"
@@ -81,12 +84,12 @@ query RelayActionStatus($relayActionId: ID!) {
           content: description,
           media: [{
             media_type : mediaType,
-            media_url : `https://gateway.pinata.cloud/ipfs/${imageUri?.path}`,
+            media_url : `${IPFS_GATEWAY_TWO}${imageUri?.path}`,
           
            
           }],
           tags: [],
-          image: `https://gateway.pinata.cloud/ipfs/${imageUri?.path}`,
+          image: `${IPFS_GATEWAY_TWO}${imageUri?.path}`,
          // image_data: !nftImageURL ? svg_data : "",
           name: name,
           description: description,
@@ -111,7 +114,7 @@ query RelayActionStatus($relayActionId: ID!) {
         profileID : profileId,
          name : name,
          symbol : "Merit",
-         tokenURI: `https://gateway.pinata.cloud/ipfs/${ipfsResult?.path}`,
+         tokenURI: `${IPFS_GATEWAY_TWO}${ipfsResult?.path}`,
          middleware: {
           collectFree: true,
         },
@@ -158,15 +161,18 @@ const signature = await signer.provider.send(method, params);
          })
    // SET_MERIT_RELAY_ID
    setmeritRelayId(txHash.relayActionId)
-         
+       setisMeritUploading(false)  
       console.log("the tx  status", TxStatus)
 
-      }
+      } catch (error) {
+        setisMeritUploading(false)
+        console.log("the error", error)
+      }}
 
          
 
       return {
-        createMerit, meritRelayId
+        createMerit, meritRelayId, isMeritUploading
       }
   }
 

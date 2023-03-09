@@ -9,6 +9,7 @@ import { PRIMARY_PROFILE } from '@/graphql/queries/getPrimaryProfileByAddress'
 import { useAccount } from 'wagmi'
 import { useCollectMerit } from '@/hooks'
 import { RELAY_ACTION_STATUS } from '@/graphql/queries/getRelayerActionStatus'
+import { RingLoader } from 'react-spinners'
 
 export default function MeritPage() {
 
@@ -42,7 +43,7 @@ export default function MeritPage() {
 
 useEffect(() => {
  
-  if (data && data.relayActionStatus) {
+  if (TxData && TxData.relayActionStatus) {
     if (TxData.relayActionStatus.txStatus === 'SUCCESS') {
 
       setisStatusSuccess(true)
@@ -74,12 +75,14 @@ console.log("tx status from collect", TxData)
             if(firstEssencyInfo?.metadata?.media[0]?.media_type   === "image/png" ){
               return(
                 <div className='max-w-[400px] h-[400px] '>
-                <img    src={firstEssencyInfo.metadata?.media[0].media_url}  className='w-[100%] h-[100%] rounded-xl'    />
+                <img    src={firstEssencyInfo.metadata?.media[0].media_url}  className='w-[100%] h-[100%] rounded-xl object-cover'    />
                 </div>
               )
             }else if(firstEssencyInfo?.metadata?.media[0]?.media_type   === "image/jpg"){
               return(
-                <img    src={firstEssencyInfo.metadata?.media[0].media_url}     />
+                 <div className='max-w-[400px] h-[400px] '>
+                <img    src={firstEssencyInfo.metadata?.media[0].media_url}   className='w-[100%] h-[100%] rounded-xl object-cover'   />
+                </div>
               )
             }else if(! firstEssencyInfo?.metadata?.media?.media_url ){
               return(
@@ -90,13 +93,20 @@ console.log("tx status from collect", TxData)
             }
          }
 
+           if(loading){
+            return(
+                <div className='w-[100vw] h-screen flex items-center justify-center'>
+                    <RingLoader   size={90}  color="#c036d6"/>
+                </div>
+            )
+           }
 
   return (
-    <div>
+    <div className='bg-purple-100'>
   <TopNav   />
-    <div className='bg-purple-100 min-h-[80vh] flex items-center justify-center'>
+    <div className=' min-h-[90vh] flex items-center justify-center'>
 
-    <div className='max-w-[1200px] mx-auto border border-purple-300 rounded-lg py-4 px-4 '>
+    <div className='max-w-[1300px] mx-auto border border-purple-300 rounded-lg py-4 px-4 '>
         <div className='flex gap-12  sm:flex-col lg:flex-row items-center justify-center'>
             {/*<div className='max-w-[400px] h-[400px] '>
                 <img  src='/img/user-avatar.png' className='w-[100%] h-[100%] rounded-xl'  />

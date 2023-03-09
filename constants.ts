@@ -41,3 +41,6 @@ export const topNavOptions = [
 
 export const fakeDescription = "This Non-transferrable NFT proves you have officially completed the third week of the Alchemy Road to Web3 Bootcamp   officially completed the third week of the Alchemy Road to Web3 Bootcamp"
 export const fakeHeading  = "PoK - Alchemy Road to Web3 - Week Three"
+
+export const  IPFS_GATEWAY = "https://ipfs.subsocial.network/ipfs/"
+export  const IPFS_GATEWAY_TWO = "https://gateway.ipfscdn.io/ipfs/"
