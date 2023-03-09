@@ -11,7 +11,7 @@ import { useCollectMerit } from '@/hooks'
 import { RELAY_ACTION_STATUS } from '@/graphql/queries/getRelayerActionStatus'
 
 export default function meritId() {
-  const [status, setStatus] = useState('queued');
+  const [status, setStatus] = useState('queued')
 const [isStatusSuccess, setisStatusSuccess] = useState(false)
 const [isStatusError, setisStatusError] = useState(false)
   const {address} = useAccount()
